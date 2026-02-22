@@ -1,0 +1,50 @@
+# ==========================================
+# SheetBase API - .gitignore
+# ==========================================
+
+# 1. SECURITY & SECRETS (Absolute Priority)
+.env
+.env.*
+*.pem
+*.key
+secrets.json
+
+# 2. PYTHON VIRTUAL ENVIRONMENTS
+venv/
+.venv/
+env/
+.python-version  
+
+# 3. PYTHON COMPILED CODE & CACHE
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 4. OS-SPECIFIC HIDDEN FILES
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 5. IDE & EDITOR CONFIGURATIONS
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 6. LOGS & DATABASES
+logs/
+*.log
+*.sqlite3
+dump.rdb  
+
+# 7. DOCKER & INFRASTRUCTURE
+.docker/
+postgres_data/

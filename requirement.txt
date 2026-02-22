@@ -1,0 +1,28 @@
+# Web Framework & Server
+fastapi==0.129.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.18
+
+# Data Validation & Config
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+
+# Google APIs & Authentication
+google-auth>=2.35.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+google-api-python-client==2.190.0
+
+# Async HTTP (For fast external calls)
+httpx>=0.27.0
+
+# Caching Layer
+redis>=5.2.0
+
+# Security (For encrypting Google Refresh Tokens)
+cryptography>=44.0.0
+
+# Database (For when we connect Postgres)
+sqlalchemy>=2.0.36
+asyncpg>=0.30.0
+alembic>=1.13.3
