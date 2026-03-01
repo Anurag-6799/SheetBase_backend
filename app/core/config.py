@@ -10,6 +10,17 @@ class Settings(BaseSettings):
     
     BACKEND_CORS_ORIGINS: List[str] = []
 
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+    GOOGLE_REDIRECT_URI: str
+
+    DATABASE_URL: str
+    REDIS_URL: str
+
+    model_config = SettingsConfigDict(
+        env_file=".env", 
+        case_sensitive=True, 
+        extra="ignore"
+    )
 
 settings = Settings()
