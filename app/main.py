@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from app.api.v1 import auth
 
 def get_application() -> FastAPI:
     """
@@ -36,3 +37,5 @@ async def health_check():
         "status": "healthy", 
         "service": settings.PROJECT_NAME
     }
+
+app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["Authentication"])
