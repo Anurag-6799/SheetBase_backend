@@ -1,5 +1,8 @@
+import requests
+
 from google_auth_oauthlib.flow import Flow
 from app.core.config import settings
+from google.oauth2.credentials import Credentials
 
 # We need basic profile info, plus read-only access to Drive and Sheets.
 SCOPES = [
@@ -47,3 +50,28 @@ def generate_auth_url() -> str:
     )
     
     return authorization_url
+
+
+def exchange_code_for_tokens(code: str) -> dict:
+    """
+    Exchanges the temporary code for permanent tokens.
+    """
+    flow = get_google_oauth_flow()
+    
+    # This makes the silent HTTP POST request to Google's backend
+    flow.fetch_token(code=code)
+    credentials = flow.credentials
+    
+    # Now we use the temporary access token to ask Google for the user's email
+    user_info_response = requests.get(
+        "https://www.googleapis.com/oauth2/v1/userinfo",
+        headers={"Authorization": f"Bearer {credentials.token}"}
+    )
+    user_info = user_info_response.json()
+    
+    return {
+        "email": user_info["email"],
+        "access_token": credentials.token,
+        "refresh_token": credentials.refresh_token,
+    }
+
