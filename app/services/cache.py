@@ -38,11 +38,17 @@ def get_client() -> redis.Redis:
 
 
 async def close_client() -> None:
+    """Release the pool on shutdown. Never raises: a failure to close a socket
+    we are discarding anyway must not turn a clean shutdown into a crash."""
     global _client, _client_loop
     if _client is not None:
-        await _client.aclose()
-        _client = None
-        _client_loop = None
+        try:
+            await _client.aclose()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("redis close failed during shutdown: %s", exc)
+        finally:
+            _client = None
+            _client_loop = None
 
 
 def cache_key(api_id: str) -> str:

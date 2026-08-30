@@ -54,6 +54,16 @@ The codebase strictly follows **Clean Architecture** principles (Domain-Driven D
 
 ---
 
+### Dashboard
+A zero-build frontend (`frontend/`, plain HTML/CSS/JS) is served by the same FastAPI process at `/`:
+* Sign in with Google, browse your Drive spreadsheets, expand one to pick a tab, publish it.
+* Manage published APIs: copy the URL, open it, clear its cache, delete it.
+* A query playground that builds the URL live, runs it, and shows whether the response came from Redis or Google and how long it took.
+
+Same-origin on purpose: it is what lets the OAuth callback redirect straight back into the app. The session token arrives in the URL *fragment* (never sent to a server, so it stays out of access logs) and sheet data is rendered with `textContent`, never `innerHTML`.
+
+---
+
 ## 📡 Example
 
 ```bash

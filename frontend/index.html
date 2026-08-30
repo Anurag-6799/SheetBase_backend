@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SheetBase</title>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<header>
+    <div class="brand">
+        <span class="logo">⚡</span>
+        <div>
+            <h1>SheetBase</h1>
+            <p class="tagline">Turn a Google Sheet into a REST API</p>
+        </div>
+    </div>
+    <div id="session" class="session"></div>
+</header>
+
+<!-- Shown when there is no session token -->
+<section id="landing" class="landing hidden">
+    <h2>Publish a spreadsheet as an API</h2>
+    <p>
+        Sign in with Google, pick a sheet, and get a JSON endpoint with filtering,
+        sorting and pagination. Reads are served from Redis, so repeat requests
+        skip Google entirely.
+    </p>
+    <a class="btn primary big" href="/api/v1/auth/login">Sign in with Google</a>
+    <p class="fineprint">Read-only access to Drive and Sheets. Nothing is ever written back.</p>
+</section>
+
+<!-- Shown when signed in -->
+<main id="app" class="hidden">
+
+    <nav class="tabs">
+        <button class="tab active" data-panel="panel-publish">Publish</button>
+        <button class="tab" data-panel="panel-apis">My APIs <span id="api-count" class="pill">0</span></button>
+        <button class="tab" data-panel="panel-play">Playground</button>
+    </nav>
+
+    <!-- 1. Publish: GET /sheets -> GET /sheets/{id}/tabs -> POST /apis -->
+    <section id="panel-publish" class="panel">
+        <div class="panel-head">
+            <h2>Your spreadsheets</h2>
+            <button id="reload-sheets" class="btn">Reload</button>
+        </div>
+        <div id="sheets-list" class="list"></div>
+    </section>
+
+    <!-- 2. Manage: GET /apis, POST /apis/{id}/refresh, DELETE /apis/{id} -->
+    <section id="panel-apis" class="panel hidden">
+        <div class="panel-head">
+            <h2>Published APIs</h2>
+            <button id="reload-apis" class="btn">Reload</button>
+        </div>
+        <div id="apis-list" class="list"></div>
+    </section>
+
+    <!-- 3. Playground: GET /data/{id} with the full query engine -->
+    <section id="panel-play" class="panel hidden">
+        <div class="panel-head">
+            <h2>Query playground</h2>
+        </div>
+
+        <div class="query-builder">
+            <label>
+                API
+                <select id="q-api"></select>
+            </label>
+            <label>
+                Columns <span class="hint">comma separated, blank = all</span>
+                <input id="q-columns" type="text" placeholder="Name,Price" />
+            </label>
+            <label>
+                Sort by
+                <input id="q-orderby" type="text" placeholder="Price" />
+            </label>
+            <label>
+                Direction
+                <select id="q-order">
+                    <option value="asc">ascending</option>
+                    <option value="desc">descending</option>
+                </select>
+            </label>
+            <label>
+                Limit
+                <input id="q-limit" type="number" min="1" max="5000" placeholder="50" />
+            </label>
+            <label>
+                Offset
+                <input id="q-offset" type="number" min="0" placeholder="0" />
+            </label>
+            <label class="wide">
+                Filters <span class="hint">column=value, one per line</span>
+                <textarea id="q-filters" rows="2" placeholder="Status=active"></textarea>
+            </label>
+        </div>
+
+        <div class="panel-head">
+            <code id="q-url" class="url-preview"></code>
+            <button id="q-run" class="btn primary">Run</button>
+        </div>
+
+        <div id="q-meta" class="meta"></div>
+        <div id="q-result" class="result"></div>
+    </section>
+
+</main>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>
