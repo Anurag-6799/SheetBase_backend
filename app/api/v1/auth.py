@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 from app.db.session import get_db
 from app.models.user import User
 from app.services.google_auth import generate_auth_url, exchange_code_for_tokens
-from app.core.security import encrypt_token
+from app.core.security import encrypt_token, create_session_token
 
 router = APIRouter()
 
@@ -51,12 +51,12 @@ async def callback(code: str, db: AsyncSession = Depends(get_db)):
         await db.commit()
         await db.refresh(user)
         
-        # Returning a JWT here
-        return {
-            "message": "Login Successful! User saved to Postgres.",
-            "user_id": user.id,
-            "email": user.email
-        }
+        # Hand the session token back to the dashboard in the URL *fragment*.
+        # A fragment is never sent to a server, so the token stays out of access
+        # logs, proxies and Referer headers - unlike a query parameter.
+        # The management endpoints then take it as `Authorization: Bearer <token>`.
+        token = create_session_token(user.id)
+        return RedirectResponse(url=f"/#token={token}")
         
     except Exception as e:
         await db.rollback()

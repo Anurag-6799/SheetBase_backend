@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     REDIS_URL: str
 
+    # How long a published sheet stays cached before we ask Google again.
+    CACHE_TTL_SECONDS: int = 300
+
     model_config = SettingsConfigDict(
         env_file=".env", 
         case_sensitive=True, 
