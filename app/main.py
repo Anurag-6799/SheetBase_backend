@@ -1,7 +1,16 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.v1 import auth
+from app.api.v1 import auth, apis, data
+from app.services import cache
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    await cache.close_client()
 
 def get_application() -> FastAPI:
     """
@@ -10,7 +19,8 @@ def get_application() -> FastAPI:
     app = FastAPI(
         title=settings.PROJECT_NAME,
         openapi_url=f"{settings.API_V1_STR}/openapi.json",
-        description="High-performance REST API generator for Google Sheets."
+        description="High-performance REST API generator for Google Sheets.",
+        lifespan=lifespan
     )
 
     # Configure CORS (Cross-Origin Resource Sharing)
@@ -39,3 +49,5 @@ async def health_check():
     }
 
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["Authentication"])
+app.include_router(apis.router, prefix=settings.API_V1_STR, tags=["API Management"])
+app.include_router(data.router, prefix=f"{settings.API_V1_STR}/data", tags=["Published Data"])
